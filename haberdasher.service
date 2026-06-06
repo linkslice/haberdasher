@@ -1,0 +1,28 @@
+[Unit]
+Description=Haberdasher reverse proxy manager
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=haberdasher
+Group=haberdasher
+ExecStart=/usr/local/bin/haberdasher
+Restart=on-failure
+RestartSec=5
+
+Environment=HABERDASHER_DATA=/var/lib/haberdasher
+Environment=HABERDASHER_LISTEN=:8080
+
+# Allow binding low ports (80/443 via caddy)
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/haberdasher
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
